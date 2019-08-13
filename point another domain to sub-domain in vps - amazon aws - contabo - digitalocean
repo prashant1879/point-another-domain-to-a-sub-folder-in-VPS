@@ -1,0 +1,51 @@
+
+******************************************************************
+Description : point another domain to sub-domain in vps. 
+domain01.com - is main domain 
+domain02.com - need to point in /var/www/html/new ( new is folder in root )  
+******************************************************************
+1. Connect to your server using SSH. 
+2. Create conf file using below command. 
+
+# Copy default Apache conf
+sudo cp /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/domain02.conf
+
+3. open that domain02.conf using below command.
+
+#Open file domain02.conf.
+sudo nano /etc/apache2/sites-available/domain02.conf
+
+4. remove all lines/code from domain02.conf
+
+5. then past below code the domain02.conf
+
+<VirtualHost *:80>
+    ServerAdmin webmaster@localhost
+    DocumentRoot /path/to/domain01.com/new
+    ServerName domain02.com
+    ServerAlias www.domain02.com
+
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+    <Directory /path/to/domain01.com/new>
+        Options Indexes FollowSymLinks MultiViews
+        AllowOverride all
+        Order allow,deny
+        allow from all
+        Require all granted
+    </Directory>
+</VirtualHost>
+
+6. register that domain02.conf using running below command. 
+
+# register site to the apache
+sudo a2ensite domain02.conf
+
+7. restart the apache2 server using below command
+
+#restart apache2 server.
+sudo service apache2 restart
+
+## Now open domain02.com its working now. 
+
